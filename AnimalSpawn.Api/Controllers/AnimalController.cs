@@ -24,10 +24,12 @@ namespace AnimalSpawn.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var animals = await _repository.GetAnimals();
-            var animalsDto = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResponseDto>>(animals);
+            var animals = _service.GetAnimals();
+            var animalsDto = _mapper.Map<IEnumerable<Animal>,
+            IEnumerable<AnimalResponseDto>>(animals);
             var response = new ApiResponse<IEnumerable<AnimalResponseDto>>(animalsDto);
             return Ok(response);
+
         }
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
@@ -51,10 +53,10 @@ namespace AnimalSpawn.Api.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await _repository.DeleteAnimal(id);
-            var response = new ApiResponse<bool>(result);
+            await _service.DeleteAnimal(id);
+            var response = new ApiResponse<bool>(true);
             return Ok(response);
-          
+
         }
         [HttpPut]
         public async Task<IActionResult> Put(int id, AnimalRequestDto animalDto)
@@ -63,8 +65,8 @@ namespace AnimalSpawn.Api.Controllers
             animal.Id = id;
             animal.UpdateAt = DateTime.Now;
             animal.UpdatedBy = 2;
-            var result = await _repository.UpdateAnimal(animal);
-            var response = new ApiResponse<bool>(result);
+            await _service.UpdateAnimal(animal);
+            var response = new ApiResponse<bool>(true);
             return Ok(response);
         }
     }

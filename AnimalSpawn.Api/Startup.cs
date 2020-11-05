@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AnimalSpawn.Domain.Interfaces;
 using AnimalSpawn.Infraestructure.Data;
+using AnimalSpawn.Infraestructure.Filters;
 using AnimalSpawn.Infraestructure.Repositories;
 using AutoMapper;
 using FluentValidation.AspNetCore;
@@ -38,6 +39,12 @@ namespace AnimalSpawn.Api
             services.AddTransient<IAnimalRepository, AnimalRepository >();
             services.AddMvc().AddFluentValidation(options =>
                 options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+            services.AddScoped(typeof(IRepository<>), typeof(SQLRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();?
+            services.AddControllers(options =>
+            options.Filters.Add<GlobalExceptionFilter>()
+            );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
